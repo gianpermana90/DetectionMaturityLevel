@@ -5,8 +5,10 @@
  */
 package ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -16,6 +18,7 @@ import javax.swing.JFileChooser;
 import org.opencv.core.*;
 import org.opencv.highgui.Highgui;        
 import org.opencv.highgui.VideoCapture;
+import org.opencv.imgproc.Imgproc;
 
 /**
  *
@@ -46,11 +49,13 @@ public class ui_main extends javax.swing.JFrame {
         btn_capture = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        panel_h = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         panel_cropped = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -95,7 +100,7 @@ public class ui_main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(panel_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -110,37 +115,21 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Cropped Image"));
+        panel_h.setBackground(new java.awt.Color(204, 204, 204));
 
-        panel_cropped.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout panel_croppedLayout = new javax.swing.GroupLayout(panel_cropped);
-        panel_cropped.setLayout(panel_croppedLayout);
-        panel_croppedLayout.setHorizontalGroup(
-            panel_croppedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 360, Short.MAX_VALUE)
+        javax.swing.GroupLayout panel_hLayout = new javax.swing.GroupLayout(panel_h);
+        panel_h.setLayout(panel_hLayout);
+        panel_hLayout.setHorizontalGroup(
+            panel_hLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 320, Short.MAX_VALUE)
         );
-        panel_croppedLayout.setVerticalGroup(
-            panel_croppedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panel_hLayout.setVerticalGroup(
+            panel_hLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 240, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panel_cropped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(panel_cropped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Image HSV");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -148,15 +137,62 @@ public class ui_main extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(panel_h, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panel_h, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        panel_cropped.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout panel_croppedLayout = new javax.swing.GroupLayout(panel_cropped);
+        panel_cropped.setLayout(panel_croppedLayout);
+        panel_croppedLayout.setHorizontalGroup(
+            panel_croppedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 320, Short.MAX_VALUE)
+        );
+        panel_croppedLayout.setVerticalGroup(
+            panel_croppedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 240, Short.MAX_VALUE)
+        );
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Cropped Image");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(269, 269, 269))
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panel_cropped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panel_cropped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -165,24 +201,42 @@ public class ui_main extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -214,21 +268,49 @@ public class ui_main extends javax.swing.JFrame {
         try {
             JFileChooser fc = new JFileChooser();
             int result = fc.showOpenDialog(null);
-            File file = new File("");
-            file = fc.getSelectedFile();
-            BufferedImage img = ImageIO.read(file);
+            
+            System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+            File input = new File("");
+            input = fc.getSelectedFile();
+            BufferedImage image = ImageIO.read(input);	
             
             // Show Original Image To Panel
             Graphics g = panel_image.getGraphics();
-            g.drawImage(img, 0, 0, 360, 240, 0, 0, img.getWidth(), img.getHeight(), null);
-            
-            // Crop Image Process
-            BufferedImage orgImg = ImageIO.read(new File("" + fc.getSelectedFile()));
-            BufferedImage subImg = orgImg.getSubimage(190, 150, 240, 144);
+            g.drawImage(image, 0, 0, 320, 240, 0, 0, image.getWidth(), image.getHeight(), null);
 
-            // Show Image Cropped To Panel 
+            //Convert To Grayscale
+            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
+            mat.put(0, 0, data);
+            Mat mat1 = new Mat(image.getHeight(),image.getWidth(),CvType.CV_8UC1);
+            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+            byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
+            mat1.get(0, 0, data1);
+            BufferedImage image1 = new BufferedImage(mat1.cols(),mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+            File ouptut = new File("grayscale.jpg");
+            ImageIO.write(image1, "jpg", ouptut);
+            
+            //Convert to HSV
+            Mat rgb = Highgui.imread(fc.getSelectedFile().toString());
+            Mat hsv = new Mat();
+            Imgproc.cvtColor(rgb, hsv, Imgproc.COLOR_RGB2HSV);
+            Highgui.imwrite("D:/hsv.png", hsv);
+            File fileHSV = new File("D:/hsv.png");
+            BufferedImage imageHSV = ImageIO.read(fileHSV);
+            
+            // Show Cropped Image To Panel 
+            Graphics g0 = panel_h.getGraphics();
+            g0.drawImage(imageHSV, 0, 0, 320, 240, 0, 0, imageHSV.getWidth(), imageHSV.getHeight(), null);
+            
+            // Crop Image Process (Random Crop Without Algorithm) Still finding out wkwk
+            BufferedImage orgImg = ImageIO.read(ouptut);
+            BufferedImage subImg = orgImg.getSubimage(190, 150, 240, 144);
+                        
+            // Show Cropped Image To Panel 
             Graphics g1 = panel_cropped.getGraphics();
-            g1.drawImage(subImg, 0, 0, 360, 240, 0, 0, subImg.getWidth(), subImg.getHeight(), null);
+            g1.drawImage(subImg, 0, 0, 320, 240, 0, 0, subImg.getWidth(), subImg.getHeight(), null);
+            
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -272,12 +354,15 @@ public class ui_main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_capture;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel panel_cropped;
+    private javax.swing.JPanel panel_h;
     private javax.swing.JPanel panel_image;
     // End of variables declaration//GEN-END:variables
 }
