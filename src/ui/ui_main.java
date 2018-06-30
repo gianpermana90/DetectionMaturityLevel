@@ -9,14 +9,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import org.opencv.core.*;
-import org.opencv.highgui.Highgui;        
+import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 
@@ -26,11 +28,17 @@ import org.opencv.imgproc.Imgproc;
  */
 public class ui_main extends javax.swing.JFrame {
 
+    public BufferedImage imageTest;
+    public BufferedImage imageHSV;
+    public BufferedImage imageObject;
+    public JFileChooser choosenFile = new JFileChooser();
+
     /**
      * Creates new form ui_main
      */
     public ui_main() {
         initComponents();
+        setLocationRelativeTo(this);
     }
 
     /**
@@ -47,7 +55,7 @@ public class ui_main extends javax.swing.JFrame {
         panel_image = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         btn_capture = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btn_browse = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         panel_h = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -84,13 +92,13 @@ public class ui_main extends javax.swing.JFrame {
         });
         jPanel4.add(btn_capture);
 
-        jButton1.setText("Browse");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_browse.setText("Browse");
+        btn_browse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_browseActionPerformed(evt);
             }
         });
-        jPanel4.add(jButton1);
+        jPanel4.add(btn_browse);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -243,78 +251,126 @@ public class ui_main extends javax.swing.JFrame {
 
     private void btn_captureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_captureActionPerformed
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    	VideoCapture camera = new VideoCapture(0);
-    	
-    	if(!camera.isOpened()){
-    		System.out.println("Error");
-    	}
-    	else {
-    		Mat frame = new Mat();
-    	    while(true){
-    	    	if (camera.read(frame)){
-    	    		System.out.println("Frame Obtained");
-    	    		System.out.println("Captured Frame Width " + 
-    	    		frame.width() + " Height " + frame.height());
-    	    		Highgui.imwrite("camera.jpg", frame);
-    	    		System.out.println("OK");
-    	    		break;
-    	    	}
-    	    }	
-    	}
-    	camera.release();
+        VideoCapture camera = new VideoCapture(0);
+
+        if (!camera.isOpened()) {
+            System.out.println("Error");
+        } else {
+            Mat frame = new Mat();
+            while (true) {
+                if (camera.read(frame)) {
+                    try {
+                        System.out.println("Frame Obtained");
+                        System.out.println("Captured Frame Width " + frame.width() + " Height " + frame.height());
+                        Highgui.imwrite("image_captured.jpg", frame);
+                        System.out.println("Image has been saved with name image_captured.jpg");
+                        File input = new File("image_captured.jpg");
+                        imageTest = ImageIO.read(input);
+                        //convert to grayscale
+                        convertGrayscale();
+                        //Detect Object
+                        detectObject();
+                        //HSV stuff
+                        convertHSV();
+                        // Show Original Image To Panel
+                        Graphics g = panel_image.getGraphics();
+                        g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
+
+                        break;
+                    } catch (IOException ex) {
+                        Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        camera.release();
     }//GEN-LAST:event_btn_captureActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_browseActionPerformed
         try {
-            JFileChooser fc = new JFileChooser();
-            int result = fc.showOpenDialog(null);
-            
-            System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+            int result = choosenFile.showOpenDialog(null);
+
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             File input = new File("");
-            input = fc.getSelectedFile();
-            BufferedImage image = ImageIO.read(input);	
-            
+            input = choosenFile.getSelectedFile();
+            imageTest = ImageIO.read(input);
+
             // Show Original Image To Panel
             Graphics g = panel_image.getGraphics();
-            g.drawImage(image, 0, 0, 320, 240, 0, 0, image.getWidth(), image.getHeight(), null);
+            g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
 
-            //Convert To Grayscale
-            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-            Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
-            mat.put(0, 0, data);
-            Mat mat1 = new Mat(image.getHeight(),image.getWidth(),CvType.CV_8UC1);
-            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
-            byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
-            mat1.get(0, 0, data1);
-            BufferedImage image1 = new BufferedImage(mat1.cols(),mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
-            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
-            File ouptut = new File("grayscale.jpg");
-            ImageIO.write(image1, "jpg", ouptut);
-            
-            //Convert to HSV
-            Mat rgb = Highgui.imread(fc.getSelectedFile().toString());
-            Mat hsv = new Mat();
-            Imgproc.cvtColor(rgb, hsv, Imgproc.COLOR_RGB2HSV);
-            Highgui.imwrite("D:/hsv.png", hsv);
-            File fileHSV = new File("D:/hsv.png");
-            BufferedImage imageHSV = ImageIO.read(fileHSV);
-            
-            // Show Cropped Image To Panel 
-            Graphics g0 = panel_h.getGraphics();
-            g0.drawImage(imageHSV, 0, 0, 320, 240, 0, 0, imageHSV.getWidth(), imageHSV.getHeight(), null);
-            
-            // Crop Image Process (Random Crop Without Algorithm) Still finding out wkwk
-            BufferedImage orgImg = ImageIO.read(ouptut);
-            BufferedImage subImg = orgImg.getSubimage(190, 150, 240, 144);
-                        
-            // Show Cropped Image To Panel 
-            Graphics g1 = panel_cropped.getGraphics();
-            g1.drawImage(subImg, 0, 0, 320, 240, 0, 0, subImg.getWidth(), subImg.getHeight(), null);
-            
+            //convert to grayscale
+            convertGrayscale();
+
+            //Detect Object
+            detectObject();
+
+            //HSV stuff
+            convertHSV();
+
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btn_browseActionPerformed
+
+    //Our Methods ngehehehhe
+    public void convertGrayscale() {
+        //Convert To Grayscale
+        byte[] data = ((DataBufferByte) imageTest.getRaster().getDataBuffer()).getData();
+        Mat mat = new Mat(imageTest.getHeight(), imageTest.getWidth(), CvType.CV_8UC3);
+        mat.put(0, 0, data);
+        Mat mat1 = new Mat(imageTest.getHeight(), imageTest.getWidth(), CvType.CV_8UC1);
+        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+        byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int) (mat1.elemSize())];
+        mat1.get(0, 0, data1);
+        BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+        image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+        File ouptut = new File("image_grayscale.jpg");
+        try {
+            ImageIO.write(imageTest, "jpg", ouptut);
+            System.out.println("Image has been saved with name image_grayscale.jpg");
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void detectObject() {
+        try {
+            Process p = Runtime.getRuntime().exec("python ObjectDetection.py");
+            String s = null;
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+            File fileHSV = new File("image_object.png");
+            imageObject = ImageIO.read(fileHSV);
+
+            // Show Object Image To Panel
+            Graphics g0 = panel_cropped.getGraphics();
+            g0.drawImage(imageObject, 0, 0, 320, 240, 0, 0, imageObject.getWidth(), imageObject.getHeight(), null);
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void convertHSV() {
+        try {
+            //Convert to HSV
+            Mat rgb = Highgui.imread("image_object.png");
+            Mat hsv = new Mat();
+            Imgproc.cvtColor(rgb, hsv, Imgproc.COLOR_RGB2HSV);
+            Highgui.imwrite("image_hsv.png", hsv);
+            System.out.println("Image has been saved with name image_hsv.jpg");
+            File fileHSV = new File("image_hsv.png");
+            imageHSV = ImageIO.read(fileHSV);
+
+            // Show HSV Image To Panel
+            Graphics g0 = panel_h.getGraphics();
+            g0.drawImage(imageHSV, 0, 0, 320, 240, 0, 0, imageHSV.getWidth(), imageHSV.getHeight(), null);
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -352,8 +408,8 @@ public class ui_main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_browse;
     private javax.swing.JButton btn_capture;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
