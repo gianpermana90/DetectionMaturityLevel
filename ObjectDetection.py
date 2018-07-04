@@ -1,6 +1,6 @@
 import cv2
 
-image = cv2.imread("image_grayscale.jpg")
+image = cv2.imread("image_test.jpg")
 gray  = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 edged = cv2.Canny(image, 10, 250)
 (_, cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
