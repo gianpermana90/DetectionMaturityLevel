@@ -109,8 +109,8 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="panel_image" max="32767" attributes="0"/>
                           <Component id="jPanel4" pref="320" max="32767" attributes="0"/>
+                          <Component id="panel_image" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jPanel7" max="32767" attributes="0"/>
@@ -226,9 +226,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <Component id="jRadioButton1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="rd_kupas" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="rd_belumkupas" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
@@ -243,8 +243,8 @@
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jRadioButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jRadioButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rd_kupas" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="rd_belumkupas" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
@@ -252,7 +252,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JRadioButton" name="jRadioButton1">
+                    <Component class="javax.swing.JRadioButton" name="rd_kupas">
                       <Properties>
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="bntGroupModelBuah"/>
@@ -260,7 +260,7 @@
                         <Property name="text" type="java.lang.String" value="Terkupas"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JRadioButton" name="jRadioButton2">
+                    <Component class="javax.swing.JRadioButton" name="rd_belumkupas">
                       <Properties>
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="bntGroupModelBuah"/>
@@ -351,22 +351,22 @@
                             <Property name="rows" type="int" value="1"/>
                           </Layout>
                           <SubComponents>
-                            <Component class="javax.swing.JButton" name="jButton1">
+                            <Component class="javax.swing.JButton" name="btn_dataTraining">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="Data Training"/>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JButton" name="jButton2">
+                            <Component class="javax.swing.JButton" name="btn_execSVM">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="Execute SVM"/>
                               </Properties>
                             </Component>
-                            <Component class="javax.swing.JButton" name="jButton3">
+                            <Component class="javax.swing.JButton" name="btn_execKNN">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="Execute KNN"/>
                               </Properties>
                               <Events>
-                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_execKNNActionPerformed"/>
                               </Events>
                             </Component>
                           </SubComponents>

@@ -62,15 +62,15 @@ public class ui_main extends javax.swing.JFrame {
         btn_browse = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        rd_kupas = new javax.swing.JRadioButton();
+        rd_belumkupas = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btn_dataTraining = new javax.swing.JButton();
+        btn_execSVM = new javax.swing.JButton();
+        btn_execKNN = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         panel_h = new javax.swing.JPanel();
@@ -119,12 +119,12 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        bntGroupModelBuah.add(jRadioButton1);
-        jRadioButton1.setText("Terkupas");
+        bntGroupModelBuah.add(rd_kupas);
+        rd_kupas.setText("Terkupas");
 
-        bntGroupModelBuah.add(jRadioButton2);
-        jRadioButton2.setSelected(true);
-        jRadioButton2.setText("Belum Terkupas");
+        bntGroupModelBuah.add(rd_belumkupas);
+        rd_belumkupas.setSelected(true);
+        rd_belumkupas.setText("Belum Terkupas");
 
         jLabel1.setText("Keadaan Buah untuk Diklasifikasi");
 
@@ -136,9 +136,9 @@ public class ui_main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
+                        .addComponent(rd_kupas)
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButton2))
+                        .addComponent(rd_belumkupas))
                     .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -149,8 +149,8 @@ public class ui_main extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(rd_kupas)
+                    .addComponent(rd_belumkupas))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -160,19 +160,19 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel11.setLayout(new java.awt.GridLayout());
 
-        jButton1.setText("Data Training");
-        jPanel11.add(jButton1);
+        btn_dataTraining.setText("Data Training");
+        jPanel11.add(btn_dataTraining);
 
-        jButton2.setText("Execute SVM");
-        jPanel11.add(jButton2);
+        btn_execSVM.setText("Execute SVM");
+        jPanel11.add(btn_execSVM);
 
-        jButton3.setText("Execute KNN");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btn_execKNN.setText("Execute KNN");
+        btn_execKNN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btn_execKNNActionPerformed(evt);
             }
         });
-        jPanel11.add(jButton3);
+        jPanel11.add(btn_execKNN);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -244,8 +244,8 @@ public class ui_main extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panel_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                    .addComponent(panel_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -471,6 +471,9 @@ public class ui_main extends javax.swing.JFrame {
 
             //Convert to HSV
             convertImage2HSV();
+            
+            //Get Sample from image
+            getSampleImage();
 
             RGBtoHSV();
 
@@ -479,9 +482,9 @@ public class ui_main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btn_browseActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btn_execKNNActionPerformed
 
     //Our Methods ngehehehhe
     public void convertGrayscale() {
@@ -522,6 +525,15 @@ public class ui_main extends javax.swing.JFrame {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void getSampleImage(){
+        Mat imgOri = Highgui.imread("image_object.png");
+        int x_pos = Math.round(imgOri.width()/2)-50;
+        int y_pos = Math.round(imgOri.height()/2)-50;
+        Rect r = new Rect(x_pos,y_pos,100,100);
+        Mat image_roi = new Mat(imgOri, r);
+        Highgui.imwrite("image_sample.png", image_roi);
+    }
 
     public void convertImage2HSV() {
         try {
@@ -543,7 +555,7 @@ public class ui_main extends javax.swing.JFrame {
     }
 
     public void RGBtoHSV() {
-        Mat rgb = Highgui.imread("image_object.png"); //BIG QUESTION MARK      <<<<================================================================
+        Mat rgb = Highgui.imread("image_sample.png"); //BIG QUESTION MARK      <<<<================================================================
         Double[][] listHSV = new Double[rgb.height()*rgb.width()][3];
         double h, s, v;
         int index = 0;
@@ -604,8 +616,13 @@ public class ui_main extends javax.swing.JFrame {
         System.out.println("Rata-rata S = " + sS/listHSV.length);
         System.out.println("Rata-rata V = " + sV/listHSV.length);
         
+        //Save Data Testing
         ExecutionManager ex = new ExecutionManager();
         ex.saveValueHSV();
+    }
+    
+    public void KNearestNeighborMethod(){
+        
     }
 
     /**
@@ -647,9 +664,9 @@ public class ui_main extends javax.swing.JFrame {
     private javax.swing.ButtonGroup bntGroupModelBuah;
     private javax.swing.JButton btn_browse;
     private javax.swing.JButton btn_capture;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btn_dataTraining;
+    private javax.swing.JButton btn_execKNN;
+    private javax.swing.JButton btn_execSVM;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -665,10 +682,10 @@ public class ui_main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JPanel panel_cropped;
     private javax.swing.JPanel panel_h;
     private javax.swing.JPanel panel_image;
+    private javax.swing.JRadioButton rd_belumkupas;
+    private javax.swing.JRadioButton rd_kupas;
     // End of variables declaration//GEN-END:variables
 }
