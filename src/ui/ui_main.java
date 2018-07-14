@@ -5,6 +5,7 @@
  */
 package ui;
 
+import cls.mangga;
 import db.ExecutionManager;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -158,7 +159,7 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel11.setLayout(new java.awt.GridLayout());
+        jPanel11.setLayout(new java.awt.GridLayout(1, 0));
 
         btn_dataTraining.setText("Data Training");
         jPanel11.add(btn_dataTraining);
@@ -554,7 +555,8 @@ public class ui_main extends javax.swing.JFrame {
         }
     }
 
-    public void RGBtoHSV() {
+    public double[] RGBtoHSV() {
+        double[] result = new double[3];
         Mat rgb = Highgui.imread("image_sample.png"); //BIG QUESTION MARK      <<<<================================================================
         Double[][] listHSV = new Double[rgb.height()*rgb.width()][3];
         double h, s, v;
@@ -612,13 +614,15 @@ public class ui_main extends javax.swing.JFrame {
             sS += listHSV[i][1];
             sV += listHSV[i][2];
         }
-        System.out.println("Rata-rata H = " + sH/listHSV.length);
-        System.out.println("Rata-rata S = " + sS/listHSV.length);
-        System.out.println("Rata-rata V = " + sV/listHSV.length);
         
-        //Save Data Testing
-        ExecutionManager ex = new ExecutionManager();
-        ex.saveValueHSV();
+        result[0] = sH/listHSV.length;
+        result[1] = sS/listHSV.length;
+        result[2] = sV/listHSV.length;
+        System.out.println("Rata-rata H = " + result[0]);
+        System.out.println("Rata-rata S = " + result[1]);
+        System.out.println("Rata-rata V = " + result[2]);
+        
+        return result;
     }
     
     public void KNearestNeighborMethod(){

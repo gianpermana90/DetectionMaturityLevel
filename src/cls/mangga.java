@@ -10,5 +10,77 @@ package cls;
  * @author Hades
  */
 public class mangga {
+    private String mode;
+    private double h;
+    private double s;
+    private double v;
+    private double brix;
+    private String kategori;
+
+    public mangga() {
+    }
+
+    public mangga(String mode, double h, double s, double v, double brix, String kategori) {
+        this.mode = mode;
+        this.h = h;
+        this.s = s;
+        this.v = v;
+        this.brix = brix;
+        this.kategori = kategori;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public double getH() {
+        return h;
+    }
+
+    public void setH(double h) {
+        this.h = h;
+    }
+
+    public double getS() {
+        return s;
+    }
+
+    public void setS(double s) {
+        this.s = s;
+    }
+
+    public double getV() {
+        return v;
+    }
+
+    public void setV(double v) {
+        this.v = v;
+    }
+
+    public double getBrix() {
+        return brix;
+    }
+
+    public void setBrix(double brix) {
+        this.brix = brix;
+    }
+
+    public String getKategori() {
+        return kategori;
+    }
+
+    public void setKategori(String kategori) {
+        this.kategori = kategori;
+    }
+
+    @Override
+    public String toString() {
+        return "mangga{" + "mode=" + mode + ", h=" + h + ", s=" + s + ", v=" + v + ", brix=" + brix + ", kategori=" + kategori + '}';
+    }
+    
     
 }

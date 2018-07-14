@@ -5,11 +5,31 @@
  */
 package ui;
 
+import cls.mangga;
+import db.ExecutionManager;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import org.opencv.core.Core;
+
 /**
  *
  * @author Hades
  */
 public class ui_training extends javax.swing.JFrame {
+
+    public BufferedImage imageTest;
+    public BufferedImage imageHSV;
+    public BufferedImage imageObject;
+    public JFileChooser choosenFile = new JFileChooser();
+    public int lastID;
+    public mangga mangga;
 
     /**
      * Creates new form ui_training
@@ -29,36 +49,42 @@ public class ui_training extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        panel_image = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        ui_train_browse = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        txt_h = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txt_s = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txt_v = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        txt_training_brix = new javax.swing.JTextField();
+        txt_b = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         cmb_training_kategori = new javax.swing.JComboBox();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        btn_training_save = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+        panel_image.setBackground(new java.awt.Color(204, 204, 204));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panel_imageLayout = new javax.swing.GroupLayout(panel_image);
+        panel_image.setLayout(panel_imageLayout);
+        panel_imageLayout.setHorizontalGroup(
+            panel_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panel_imageLayout.setVerticalGroup(
+            panel_imageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 240, Short.MAX_VALUE)
         );
 
@@ -67,8 +93,13 @@ public class ui_training extends javax.swing.JFrame {
         jButton1.setText("Capture");
         jPanel4.add(jButton1);
 
-        jButton2.setText("Browse");
-        jPanel4.add(jButton2);
+        ui_train_browse.setText("Browse");
+        ui_train_browse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ui_train_browseActionPerformed(evt);
+            }
+        });
+        jPanel4.add(ui_train_browse);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -76,7 +107,7 @@ public class ui_training extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -91,7 +122,7 @@ public class ui_training extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panel_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -99,7 +130,7 @@ public class ui_training extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel_image, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -109,13 +140,31 @@ public class ui_training extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel7.setLayout(new java.awt.GridLayout(2, 2, 0, 10));
+        jPanel7.setLayout(new java.awt.GridLayout(5, 2, 0, 10));
+
+        jLabel4.setText("Hue");
+        jPanel7.add(jLabel4);
+
+        txt_h.setText("-");
+        jPanel7.add(txt_h);
+
+        jLabel3.setText("Saturation");
+        jPanel7.add(jLabel3);
+
+        txt_s.setText("-");
+        jPanel7.add(txt_s);
+
+        jLabel5.setText("Value");
+        jPanel7.add(jLabel5);
+
+        txt_v.setText("-");
+        jPanel7.add(txt_v);
 
         jLabel1.setText("Brix");
         jPanel7.add(jLabel1);
 
-        txt_training_brix.setText("-");
-        jPanel7.add(txt_training_brix);
+        txt_b.setText("-");
+        jPanel7.add(txt_b);
 
         jLabel2.setText("Kategori");
         jPanel7.add(jLabel2);
@@ -129,21 +178,28 @@ public class ui_training extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel9.setLayout(new java.awt.GridLayout());
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButton3.setText("Simpan Data Training");
-        jPanel9.add(jButton3);
+        jPanel9.setLayout(new java.awt.GridLayout(1, 0));
+
+        btn_training_save.setText("Simpan Data Training");
+        btn_training_save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_training_saveActionPerformed(evt);
+            }
+        });
+        jPanel9.add(btn_training_save);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -156,10 +212,10 @@ public class ui_training extends javax.swing.JFrame {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -177,9 +233,9 @@ public class ui_training extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -189,8 +245,8 @@ public class ui_training extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -205,6 +261,76 @@ public class ui_training extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ui_train_browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ui_train_browseActionPerformed
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        try {
+            //Please do not laught if you see this code cause i'm a beginer LOL
+            try {
+                choosenFile.showOpenDialog(null);
+            } catch (Exception e) {
+                //Do nothing
+            }
+
+            //Select File
+            File input = new File("");
+            input = choosenFile.getSelectedFile();
+            imageTest = ImageIO.read(input);
+
+            // Show Original Image To Panel
+            Graphics g = panel_image.getGraphics();
+            g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
+
+            ui_main main = new ui_main();
+
+            //Detect Object
+            main.detectObject();
+
+            //Convert to HSV
+            main.convertImage2HSV();
+
+            //Get Sample from image
+            main.getSampleImage();
+
+            //Get HSV value
+            double[] hsv = main.RGBtoHSV();
+
+            //Set value
+            txt_h.setText(Double.toString(hsv[0]));
+            txt_s.setText(Double.toString(hsv[1]));
+            txt_v.setText(Double.toString(hsv[2]));
+
+            mangga = new mangga();
+            mangga.setMode("Belum Terkupas");
+            mangga.setH(hsv[0]);
+            mangga.setS(hsv[1]);
+            mangga.setV(hsv[2]);
+            //example
+            mangga.setKategori("Matang");
+
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ui_train_browseActionPerformed
+
+    private void btn_training_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_training_saveActionPerformed
+        //Get Last ID
+        ExecutionManager ex = new ExecutionManager();
+        lastID = ex.getLastID() + 1;
+
+        //Make a copy of image test
+        File out = new File("training/" + lastID + ".jpg");
+        try {
+            ImageIO.write(imageTest, "jpg", out);
+        } catch (IOException ex1) {
+            Logger.getLogger(ui_training.class.getName()).log(Level.SEVERE, null, ex1);
+        }
+
+        //Save Data Testing
+        if(ex.saveValueHSV(mangga) != 0){
+            JOptionPane.showMessageDialog(null, "Data Training Berhasil Disimpan");
+        }
+    }//GEN-LAST:event_btn_training_saveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,14 +368,15 @@ public class ui_training extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_training_save;
     private javax.swing.JComboBox cmb_training_kategori;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -257,6 +384,11 @@ public class ui_training extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JTextField txt_training_brix;
+    private javax.swing.JPanel panel_image;
+    private javax.swing.JTextField txt_b;
+    private javax.swing.JTextField txt_h;
+    private javax.swing.JTextField txt_s;
+    private javax.swing.JTextField txt_v;
+    private javax.swing.JButton ui_train_browse;
     // End of variables declaration//GEN-END:variables
 }

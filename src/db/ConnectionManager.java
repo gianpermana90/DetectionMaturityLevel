@@ -16,15 +16,13 @@ public class ConnectionManager {
 
     private Connection con;
     private String driver = "com.mysql.jdbc.Driver";
-    private String url = "jdbc:mysql://localhost:3306/svm_knn"; //myDB --> nama database
-    private String username = "root";   //username DBMS
-    private String password = "4426896";   //pwd DBMS
+    private String url = "jdbc:mysql://localhost:3306/svm_knn";
+    private String username = "root";
+    private String password = "4426896";
 
     public Connection logOn() {
         try {
-            //load JDBC Driver
             Class.forName(driver).newInstance();
-            //buat objek connection
             con = DriverManager.getConnection(url, username, password);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -34,7 +32,6 @@ public class ConnectionManager {
 
     public void logOff() {
         try {
-            //tutup koneksi
             con.close();
         } catch (Exception ex) {
             ex.printStackTrace();
