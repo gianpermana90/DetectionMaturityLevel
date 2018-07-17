@@ -68,7 +68,7 @@ public class ui_training extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         cmb_training_kategori = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        cmb_training_mode = new javax.swing.JComboBox();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         btn_training_save = new javax.swing.JButton();
@@ -171,15 +171,14 @@ public class ui_training extends javax.swing.JFrame {
         jLabel2.setText("Kategori");
         jPanel7.add(jLabel2);
 
-        cmb_training_kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Belum Manis", "Sedang", "Manis" }));
+        cmb_training_kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Pilih Kategori --", "Belum Manis", "Sedang", "Manis" }));
         jPanel7.add(cmb_training_kategori);
 
         jLabel6.setText("Mode");
         jPanel7.add(jLabel6);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Terkupas", "Belum Terkupas" }));
-        jComboBox1.setSelectedIndex(1);
-        jPanel7.add(jComboBox1);
+        cmb_training_mode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Pilih Mode --", "Belum Terkupas", "Terkupas" }));
+        jPanel7.add(cmb_training_mode);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -313,10 +312,8 @@ public class ui_training extends javax.swing.JFrame {
             txt_h.setText(Double.toString(hsv[0]));
             txt_s.setText(Double.toString(hsv[1]));
             txt_v.setText(Double.toString(hsv[2]));
-            
-            txt_b.setText("Silakan isi nilai brix");
 
-            //example
+            txt_b.setText("0");
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -327,7 +324,7 @@ public class ui_training extends javax.swing.JFrame {
         ExecutionManager ex = new ExecutionManager();
 
         lastID = ex.getLastID() + 1;
-        
+
         //Make a copy of image test
         File out = new File("training/" + lastID + ".jpg");
         try {
@@ -337,19 +334,32 @@ public class ui_training extends javax.swing.JFrame {
         }
 
         mangga m = new mangga();
-        m.setMode("Belum Terkupas");
+        m.setMode(cmb_training_mode.getSelectedItem().toString());
         m.setH(hsv[0]);
         m.setS(hsv[1]);
         m.setV(hsv[2]);
         m.setBrix(Double.parseDouble(txt_b.getText()));
         m.setKategori(cmb_training_kategori.getSelectedItem().toString());
         System.out.println(m.toString());
-        
+
         //Save Data Testing
         if (ex.saveValueHSV(m) != 0) {
             JOptionPane.showMessageDialog(null, "Data Training Berhasil Disimpan");
+            clearField();
         }
     }//GEN-LAST:event_btn_training_saveActionPerformed
+
+    private void clearField() {
+        txt_h.setText("0");
+        txt_s.setText("0");
+        txt_v.setText("0");
+        txt_b.setText("0");
+
+        cmb_training_kategori.setSelectedIndex(0);
+        cmb_training_mode.setSelectedIndex(0);
+
+        panel_image.repaint();
+    }
 
     /**
      * @param args the command line arguments
@@ -389,8 +399,8 @@ public class ui_training extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_training_save;
     private javax.swing.JComboBox cmb_training_kategori;
+    private javax.swing.JComboBox cmb_training_mode;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

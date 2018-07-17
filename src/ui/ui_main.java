@@ -85,6 +85,11 @@ public class ui_main extends javax.swing.JFrame {
         panel_cropped = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txt_svm = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txt_knn = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -258,8 +263,7 @@ public class ui_main extends javax.swing.JFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                     .addComponent(panel_image, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,15 +360,35 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jPanel12.setLayout(new java.awt.GridLayout(2, 1, 0, 10));
+
+        txt_svm.setColumns(20);
+        txt_svm.setRows(5);
+        jScrollPane2.setViewportView(txt_svm);
+
+        jPanel12.add(jScrollPane2);
+
+        txt_knn.setColumns(20);
+        txt_knn.setRows(5);
+        jScrollPane1.setViewportView(txt_knn);
+
+        jPanel12.add(jScrollPane1);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 252, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -378,7 +402,7 @@ public class ui_main extends javax.swing.JFrame {
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -455,6 +479,8 @@ public class ui_main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_captureActionPerformed
 
     private void btn_browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_browseActionPerformed
+        txt_svm.setText("SVM METHOD OUTPUT \n===============================\n\n");
+        txt_knn.setText("KNN METHOD OUTPUT \n===============================\n\n");
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         h_test = 0.0;
         s_test = 0.0;
@@ -500,7 +526,15 @@ public class ui_main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_browseActionPerformed
 
     private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
-        KNearestNeighborMethod();
+        int rank = 0;
+        try {
+            rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));        
+        } catch (Exception e) {
+            //Do Nothing Bro
+        }
+        if(rank != 0){
+            KNearestNeighborMethod(rank);
+        }
     }//GEN-LAST:event_btn_execKNNActionPerformed
 
     private void btn_execSVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execSVMActionPerformed
@@ -638,14 +672,17 @@ public class ui_main extends javax.swing.JFrame {
         result[0] = sH/listHSV.length;
         result[1] = sS/listHSV.length;
         result[2] = sV/listHSV.length;
-        System.out.println("Rata-rata H = " + result[0]);
-        System.out.println("Rata-rata S = " + result[1]);
-        System.out.println("Rata-rata V = " + result[2]);
+        txt_knn.append(">Rata-rata H = " + result[0]+"\n");
+        txt_knn.append(">Rata-rata S = " + result[1]+"\n");
+        txt_knn.append(">Rata-rata V = " + result[2]+"\n");
+        txt_svm.append(">Rata-rata H = " + result[0]+"\n");
+        txt_svm.append(">Rata-rata S = " + result[1]+"\n");
+        txt_svm.append(">Rata-rata V = " + result[2]+"\n");
         
         return result;
     }
     
-    public void KNearestNeighborMethod(){
+    public void KNearestNeighborMethod(int rank){
         ExecutionManager e = new ExecutionManager();
         String mode = "";
         if(rd_kupas.isSelected()){
@@ -661,33 +698,45 @@ public class ui_main extends javax.swing.JFrame {
         //double[] sDis = new double[listMangga.size()];
         //int counter = 0;
         for (mangga lm : listMangga) {
-            //sDis[counter] = Math.pow((lm.getH() - h_test),2) + Math.pow((lm.getS() - s_test),2) + Math.pow((lm.getV() - v_test),2);
             lm.setSquareDistance(Math.pow((lm.getH() - h_test),2) + Math.pow((lm.getS() - s_test),2) + Math.pow((lm.getV() - v_test),2));
-            //Show Square Distance Value  (Deleted Soon)
-            System.out.print("Kategori = " + lm.getKategori());
-            System.out.print(" H = "+lm.getH());
-            System.out.print(" S = "+lm.getS());
-            System.out.print(" V = "+lm.getV());
-            System.out.println(" Square Distance = "+lm.getSquareDistance());
         }
         
         //Sort By Rank
         listMangga.sort(Comparator.comparingDouble(mangga::getSquareDistance));
-        //Show List That Has Been Ranked
-        for (mangga lm : listMangga) {
-            System.out.print("Kategori = " + lm.getKategori());
-            System.out.print(" H = "+lm.getH());
-            System.out.print(" S = "+lm.getS());
-            System.out.print(" V = "+lm.getV());
-            System.out.println(" Square Distance = "+lm.getSquareDistance());
-        }
+        
+//        Show List That Has Been Ranked
+//        for (mangga lm : listMangga) {
+//            System.out.print("Kategori = " + lm.getKategori());
+//            System.out.print(" H = "+lm.getH());
+//            System.out.print(" S = "+lm.getS());
+//            System.out.print(" V = "+lm.getV());
+//            System.out.println(" Square Distance = "+lm.getSquareDistance());
+//        }
+//        System.out.println("----------------------------------");
         
         //Classified
-        int rank = 1;
-        List<mangga> rankedMangga = new ArrayList<mangga>();
+        int manis = 0;
+        int sedang = 0;
+        int belum = 0;
         for (int i = 0; i < rank; i++) {
-            rankedMangga.add(listMangga.get(i));
+//            System.out.println(listMangga.get(i).getKategori());
+            if(listMangga.get(i).getKategori().equals("Manis")){
+                manis++;
+            }else if(listMangga.get(i).getKategori().equals("Sedang")){
+                sedang++;
+            }else if(listMangga.get(i).getKategori().equals("Belum Manis")){
+                belum++;
+            }
         }
+//        System.out.println(manis +" ---- "+sedang+" ---- "+belum);
+        if(manis >= sedang && manis >= belum){
+            txt_knn.append(">Buah ini Manis");
+        }else if(sedang >= manis && sedang >= belum){
+            txt_knn.append(">Buah Ini Sedang - Sedang Saja");
+        }else if(belum >= sedang && belum >= manis){
+            txt_knn.append(">Buah Ini Belum Manis");
+        }
+        
     }
 
     /**
@@ -739,6 +788,7 @@ public class ui_main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -747,10 +797,14 @@ public class ui_main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel panel_cropped;
     private javax.swing.JPanel panel_h;
     private javax.swing.JPanel panel_image;
     private javax.swing.JRadioButton rd_belumkupas;
     private javax.swing.JRadioButton rd_kupas;
+    private javax.swing.JTextArea txt_knn;
+    private javax.swing.JTextArea txt_svm;
     // End of variables declaration//GEN-END:variables
 }
