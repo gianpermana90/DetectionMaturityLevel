@@ -29,7 +29,7 @@ public class ui_training extends javax.swing.JFrame {
     public BufferedImage imageObject;
     public JFileChooser choosenFile = new JFileChooser();
     public int lastID;
-    public mangga mangga;
+    public double[] hsv = new double[3];
 
     /**
      * Creates new form ui_training
@@ -67,6 +67,8 @@ public class ui_training extends javax.swing.JFrame {
         txt_b = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         cmb_training_kategori = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         btn_training_save = new javax.swing.JButton();
@@ -112,7 +114,7 @@ public class ui_training extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -140,30 +142,30 @@ public class ui_training extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel7.setLayout(new java.awt.GridLayout(5, 2, 0, 10));
+        jPanel7.setLayout(new java.awt.GridLayout(6, 2, 0, 10));
 
         jLabel4.setText("Hue");
         jPanel7.add(jLabel4);
 
-        txt_h.setText("-");
+        txt_h.setText("0");
         jPanel7.add(txt_h);
 
         jLabel3.setText("Saturation");
         jPanel7.add(jLabel3);
 
-        txt_s.setText("-");
+        txt_s.setText("0");
         jPanel7.add(txt_s);
 
         jLabel5.setText("Value");
         jPanel7.add(jLabel5);
 
-        txt_v.setText("-");
+        txt_v.setText("0");
         jPanel7.add(txt_v);
 
         jLabel1.setText("Brix");
         jPanel7.add(jLabel1);
 
-        txt_b.setText("-");
+        txt_b.setText("0");
         jPanel7.add(txt_b);
 
         jLabel2.setText("Kategori");
@@ -171,6 +173,13 @@ public class ui_training extends javax.swing.JFrame {
 
         cmb_training_kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Belum Manis", "Sedang", "Manis" }));
         jPanel7.add(cmb_training_kategori);
+
+        jLabel6.setText("Mode");
+        jPanel7.add(jLabel6);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Terkupas", "Belum Terkupas" }));
+        jComboBox1.setSelectedIndex(1);
+        jPanel7.add(jComboBox1);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -185,7 +194,7 @@ public class ui_training extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -234,8 +243,9 @@ public class ui_training extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -253,10 +263,10 @@ public class ui_training extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -281,6 +291,10 @@ public class ui_training extends javax.swing.JFrame {
             Graphics g = panel_image.getGraphics();
             g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
 
+            //Make a copy of image test
+            File out = new File("image_test.jpg");
+            ImageIO.write(imageTest, "jpg", out);
+
             ui_main main = new ui_main();
 
             //Detect Object
@@ -293,21 +307,16 @@ public class ui_training extends javax.swing.JFrame {
             main.getSampleImage();
 
             //Get HSV value
-            double[] hsv = main.RGBtoHSV();
+            this.hsv = main.RGBtoHSV();
 
             //Set value
             txt_h.setText(Double.toString(hsv[0]));
             txt_s.setText(Double.toString(hsv[1]));
             txt_v.setText(Double.toString(hsv[2]));
+            
+            txt_b.setText("Silakan isi nilai brix");
 
-            mangga = new mangga();
-            mangga.setMode("Belum Terkupas");
-            mangga.setH(hsv[0]);
-            mangga.setS(hsv[1]);
-            mangga.setV(hsv[2]);
             //example
-            mangga.setKategori("Matang");
-
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -316,8 +325,9 @@ public class ui_training extends javax.swing.JFrame {
     private void btn_training_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_training_saveActionPerformed
         //Get Last ID
         ExecutionManager ex = new ExecutionManager();
-        lastID = ex.getLastID() + 1;
 
+        lastID = ex.getLastID() + 1;
+        
         //Make a copy of image test
         File out = new File("training/" + lastID + ".jpg");
         try {
@@ -326,8 +336,17 @@ public class ui_training extends javax.swing.JFrame {
             Logger.getLogger(ui_training.class.getName()).log(Level.SEVERE, null, ex1);
         }
 
+        mangga m = new mangga();
+        m.setMode("Belum Terkupas");
+        m.setH(hsv[0]);
+        m.setS(hsv[1]);
+        m.setV(hsv[2]);
+        m.setBrix(Double.parseDouble(txt_b.getText()));
+        m.setKategori(cmb_training_kategori.getSelectedItem().toString());
+        System.out.println(m.toString());
+        
         //Save Data Testing
-        if(ex.saveValueHSV(mangga) != 0){
+        if (ex.saveValueHSV(m) != 0) {
             JOptionPane.showMessageDialog(null, "Data Training Berhasil Disimpan");
         }
     }//GEN-LAST:event_btn_training_saveActionPerformed
@@ -371,11 +390,13 @@ public class ui_training extends javax.swing.JFrame {
     private javax.swing.JButton btn_training_save;
     private javax.swing.JComboBox cmb_training_kategori;
     private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

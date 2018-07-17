@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -36,6 +38,9 @@ public class ui_main extends javax.swing.JFrame {
     public BufferedImage imageHSV;
     public BufferedImage imageObject;
     public JFileChooser choosenFile = new JFileChooser();
+    public double h_test;
+    public double s_test;
+    public double v_test;
 
     /**
      * Creates new form ui_main
@@ -165,6 +170,11 @@ public class ui_main extends javax.swing.JFrame {
         jPanel11.add(btn_dataTraining);
 
         btn_execSVM.setText("Execute SVM");
+        btn_execSVM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_execSVMActionPerformed(evt);
+            }
+        });
         jPanel11.add(btn_execSVM);
 
         btn_execKNN.setText("Execute KNN");
@@ -446,6 +456,9 @@ public class ui_main extends javax.swing.JFrame {
 
     private void btn_browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_browseActionPerformed
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        h_test = 0.0;
+        s_test = 0.0;
+        v_test = 0.0;
         try {
             //Please do not laught if you see this code cause i'm a beginer LOL
             try {
@@ -476,7 +489,10 @@ public class ui_main extends javax.swing.JFrame {
             //Get Sample from image
             getSampleImage();
 
-            RGBtoHSV();
+            double[] hsv = RGBtoHSV();
+            h_test = hsv[0];
+            s_test = hsv[1];
+            v_test = hsv[2];
 
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
@@ -484,8 +500,12 @@ public class ui_main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_browseActionPerformed
 
     private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
-        // TODO add your handling code here:
+        KNearestNeighborMethod();
     }//GEN-LAST:event_btn_execKNNActionPerformed
+
+    private void btn_execSVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execSVMActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_execSVMActionPerformed
 
     //Our Methods ngehehehhe
     public void convertGrayscale() {
@@ -626,7 +646,48 @@ public class ui_main extends javax.swing.JFrame {
     }
     
     public void KNearestNeighborMethod(){
+        ExecutionManager e = new ExecutionManager();
+        String mode = "";
+        if(rd_kupas.isSelected()){
+            mode = rd_kupas.getText();
+        }else{
+            mode = rd_belumkupas.getText();
+        }
+
+        //Get All The Data
+        List<mangga> listMangga = e.getAllDataTraining(mode);
         
+        //Find Square Distance
+        //double[] sDis = new double[listMangga.size()];
+        //int counter = 0;
+        for (mangga lm : listMangga) {
+            //sDis[counter] = Math.pow((lm.getH() - h_test),2) + Math.pow((lm.getS() - s_test),2) + Math.pow((lm.getV() - v_test),2);
+            lm.setSquareDistance(Math.pow((lm.getH() - h_test),2) + Math.pow((lm.getS() - s_test),2) + Math.pow((lm.getV() - v_test),2));
+            //Show Square Distance Value  (Deleted Soon)
+            System.out.print("Kategori = " + lm.getKategori());
+            System.out.print(" H = "+lm.getH());
+            System.out.print(" S = "+lm.getS());
+            System.out.print(" V = "+lm.getV());
+            System.out.println(" Square Distance = "+lm.getSquareDistance());
+        }
+        
+        //Sort By Rank
+        listMangga.sort(Comparator.comparingDouble(mangga::getSquareDistance));
+        //Show List That Has Been Ranked
+        for (mangga lm : listMangga) {
+            System.out.print("Kategori = " + lm.getKategori());
+            System.out.print(" H = "+lm.getH());
+            System.out.print(" S = "+lm.getS());
+            System.out.print(" V = "+lm.getV());
+            System.out.println(" Square Distance = "+lm.getSquareDistance());
+        }
+        
+        //Classified
+        int rank = 1;
+        List<mangga> rankedMangga = new ArrayList<mangga>();
+        for (int i = 0; i < rank; i++) {
+            rankedMangga.add(listMangga.get(i));
+        }
     }
 
     /**

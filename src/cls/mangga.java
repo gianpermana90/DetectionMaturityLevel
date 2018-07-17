@@ -16,17 +16,19 @@ public class mangga {
     private double v;
     private double brix;
     private String kategori;
+    private double SquareDistance;
 
     public mangga() {
     }
 
-    public mangga(String mode, double h, double s, double v, double brix, String kategori) {
+    public mangga(String mode, double h, double s, double v, double brix, String kategori, double SquareDistance) {
         this.mode = mode;
         this.h = h;
         this.s = s;
         this.v = v;
         this.brix = brix;
         this.kategori = kategori;
+        this.SquareDistance = SquareDistance;
     }
 
     public String getMode() {
@@ -75,6 +77,14 @@ public class mangga {
 
     public void setKategori(String kategori) {
         this.kategori = kategori;
+    }
+
+    public double getSquareDistance() {
+        return SquareDistance;
+    }
+
+    public void setSquareDistance(double SquareDistance) {
+        this.SquareDistance = SquareDistance;
     }
 
     @Override
