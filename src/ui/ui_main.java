@@ -75,8 +75,8 @@ public class ui_main extends javax.swing.JFrame {
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         btn_dataTraining = new javax.swing.JButton();
-        btn_execSVM = new javax.swing.JButton();
         btn_execKNN = new javax.swing.JButton();
+        btn_execSVM = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         panel_h = new javax.swing.JPanel();
@@ -86,10 +86,10 @@ public class ui_main extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txt_svm = new javax.swing.JTextArea();
         jScrollPane1 = new javax.swing.JScrollPane();
         txt_knn = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txt_svm = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -172,15 +172,12 @@ public class ui_main extends javax.swing.JFrame {
         jPanel11.setLayout(new java.awt.GridLayout(1, 0));
 
         btn_dataTraining.setText("Data Training");
-        jPanel11.add(btn_dataTraining);
-
-        btn_execSVM.setText("Execute SVM");
-        btn_execSVM.addActionListener(new java.awt.event.ActionListener() {
+        btn_dataTraining.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_execSVMActionPerformed(evt);
+                btn_dataTrainingActionPerformed(evt);
             }
         });
-        jPanel11.add(btn_execSVM);
+        jPanel11.add(btn_dataTraining);
 
         btn_execKNN.setText("Execute KNN");
         btn_execKNN.addActionListener(new java.awt.event.ActionListener() {
@@ -189,6 +186,14 @@ public class ui_main extends javax.swing.JFrame {
             }
         });
         jPanel11.add(btn_execKNN);
+
+        btn_execSVM.setText("Execute SVM");
+        btn_execSVM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_execSVMActionPerformed(evt);
+            }
+        });
+        jPanel11.add(btn_execSVM);
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -362,17 +367,17 @@ public class ui_main extends javax.swing.JFrame {
 
         jPanel12.setLayout(new java.awt.GridLayout(2, 1, 0, 10));
 
-        txt_svm.setColumns(20);
-        txt_svm.setRows(5);
-        jScrollPane2.setViewportView(txt_svm);
-
-        jPanel12.add(jScrollPane2);
-
         txt_knn.setColumns(20);
         txt_knn.setRows(5);
         jScrollPane1.setViewportView(txt_knn);
 
         jPanel12.add(jScrollPane1);
+
+        txt_svm.setColumns(20);
+        txt_svm.setRows(5);
+        jScrollPane2.setViewportView(txt_svm);
+
+        jPanel12.add(jScrollPane2);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -530,7 +535,7 @@ public class ui_main extends javax.swing.JFrame {
         try {
             rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));        
         } catch (Exception e) {
-            //Do Nothing Bro
+            //Do Nothing
         }
         if(rank != 0){
             KNearestNeighborMethod(rank);
@@ -538,8 +543,13 @@ public class ui_main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_execKNNActionPerformed
 
     private void btn_execSVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execSVMActionPerformed
-        // TODO add your handling code here:
+        SupportVectorMachineMethod();
     }//GEN-LAST:event_btn_execSVMActionPerformed
+
+    private void btn_dataTrainingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dataTrainingActionPerformed
+        ui_training train = new ui_training();
+        train.setVisible(true);
+    }//GEN-LAST:event_btn_dataTrainingActionPerformed
 
     //Our Methods ngehehehhe
     public void convertGrayscale() {
@@ -674,10 +684,10 @@ public class ui_main extends javax.swing.JFrame {
         result[2] = sV/listHSV.length;
         txt_knn.append(">Rata-rata H = " + result[0]+"\n");
         txt_knn.append(">Rata-rata S = " + result[1]+"\n");
-        txt_knn.append(">Rata-rata V = " + result[2]+"\n");
+        txt_knn.append(">Rata-rata V = " + result[2]+"\n\n");
         txt_svm.append(">Rata-rata H = " + result[0]+"\n");
         txt_svm.append(">Rata-rata S = " + result[1]+"\n");
-        txt_svm.append(">Rata-rata V = " + result[2]+"\n");
+        txt_svm.append(">Rata-rata V = " + result[2]+"\n\n");
         
         return result;
     }
@@ -727,16 +737,36 @@ public class ui_main extends javax.swing.JFrame {
             }else if(listMangga.get(i).getKategori().equals("Belum Manis")){
                 belum++;
             }
+            if(i == 0){
+                txt_knn.append(">Nilai Brix Terdekat : "+listMangga.get(i).getBrix()+"\n\n");
+            }
         }
-//        System.out.println(manis +" ---- "+sedang+" ---- "+belum);
+        System.out.println(manis +" ---- "+sedang+" ---- "+belum);
         if(manis >= sedang && manis >= belum){
-            txt_knn.append(">Buah ini Manis");
+            txt_knn.append(">Buah ini Manis\n");
         }else if(sedang >= manis && sedang >= belum){
-            txt_knn.append(">Buah Ini Sedang - Sedang Saja");
+            txt_knn.append(">Buah Ini Sedang - Sedang Saja\n");
         }else if(belum >= sedang && belum >= manis){
-            txt_knn.append(">Buah Ini Belum Manis");
+            txt_knn.append(">Buah Ini Belum Manis\n");
         }
         
+    }
+    
+    public void SupportVectorMachineMethod(){
+        //Get  Data Training
+        ExecutionManager e = new ExecutionManager();
+        String mode = "";
+        if(rd_kupas.isSelected()){
+            mode = rd_kupas.getText();
+        }else{
+            mode = rd_belumkupas.getText();
+        }
+        //Get All The Data
+        List<mangga> listMangga = e.getAllDataTraining(mode);
+        
+        //Find Hyperlane
+        
+        //Clasified
     }
 
     /**

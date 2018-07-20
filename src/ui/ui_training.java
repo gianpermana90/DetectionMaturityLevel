@@ -73,7 +73,7 @@ public class ui_training extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         btn_training_save = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
