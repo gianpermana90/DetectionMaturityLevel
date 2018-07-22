@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -497,7 +498,7 @@ public class ui_main extends javax.swing.JFrame {
             } catch (Exception e) {
                 //Do nothing
             }
-            
+
             //Select File
             File input = new File("");
             input = choosenFile.getSelectedFile();
@@ -516,7 +517,7 @@ public class ui_main extends javax.swing.JFrame {
 
             //Convert to HSV
             convertImage2HSV();
-            
+
             //Get Sample from image
             getSampleImage();
 
@@ -533,11 +534,11 @@ public class ui_main extends javax.swing.JFrame {
     private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
         int rank = 0;
         try {
-            rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));        
+            rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));
         } catch (Exception e) {
             //Do Nothing
         }
-        if(rank != 0){
+        if (rank != 0) {
             KNearestNeighborMethod(rank);
         }
     }//GEN-LAST:event_btn_execKNNActionPerformed
@@ -590,12 +591,12 @@ public class ui_main extends javax.swing.JFrame {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void getSampleImage(){
+
+    public void getSampleImage() {
         Mat imgOri = Highgui.imread("image_object.png");
-        int x_pos = Math.round(imgOri.width()/2)-50;
-        int y_pos = Math.round(imgOri.height()/2)-50;
-        Rect r = new Rect(x_pos,y_pos,100,100);
+        int x_pos = Math.round(imgOri.width() / 2) - 50;
+        int y_pos = Math.round(imgOri.height() / 2) - 50;
+        Rect r = new Rect(x_pos, y_pos, 100, 100);
         Mat image_roi = new Mat(imgOri, r);
         Highgui.imwrite("image_sample.png", image_roi);
     }
@@ -622,7 +623,7 @@ public class ui_main extends javax.swing.JFrame {
     public double[] RGBtoHSV() {
         double[] result = new double[3];
         Mat rgb = Highgui.imread("image_sample.png"); //BIG QUESTION MARK      <<<<================================================================
-        Double[][] listHSV = new Double[rgb.height()*rgb.width()][3];
+        Double[][] listHSV = new Double[rgb.height() * rgb.width()][3];
         double h, s, v;
         int index = 0;
         for (int j = 0; j < rgb.height(); j++) {
@@ -665,7 +666,7 @@ public class ui_main extends javax.swing.JFrame {
                 if (h < 0) {
                     h += 360;
                 }
-                listHSV[index][0] = h;                
+                listHSV[index][0] = h;
                 index++;
             }
         }
@@ -678,42 +679,42 @@ public class ui_main extends javax.swing.JFrame {
             sS += listHSV[i][1];
             sV += listHSV[i][2];
         }
-        
-        result[0] = sH/listHSV.length;
-        result[1] = sS/listHSV.length;
-        result[2] = sV/listHSV.length;
-        txt_knn.append(">Rata-rata H = " + result[0]+"\n");
-        txt_knn.append(">Rata-rata S = " + result[1]+"\n");
-        txt_knn.append(">Rata-rata V = " + result[2]+"\n\n");
-        txt_svm.append(">Rata-rata H = " + result[0]+"\n");
-        txt_svm.append(">Rata-rata S = " + result[1]+"\n");
-        txt_svm.append(">Rata-rata V = " + result[2]+"\n\n");
-        
+
+        result[0] = sH / listHSV.length;
+        result[1] = sS / listHSV.length;
+        result[2] = sV / listHSV.length;
+        txt_knn.append(">Rata-rata H = " + result[0] + "\n");
+        txt_knn.append(">Rata-rata S = " + result[1] + "\n");
+        txt_knn.append(">Rata-rata V = " + result[2] + "\n\n");
+        txt_svm.append(">Rata-rata H = " + result[0] + "\n");
+        txt_svm.append(">Rata-rata S = " + result[1] + "\n");
+        txt_svm.append(">Rata-rata V = " + result[2] + "\n\n");
+
         return result;
     }
-    
-    public void KNearestNeighborMethod(int rank){
+
+    public void KNearestNeighborMethod(int rank) {
         ExecutionManager e = new ExecutionManager();
         String mode = "";
-        if(rd_kupas.isSelected()){
+        if (rd_kupas.isSelected()) {
             mode = rd_kupas.getText();
-        }else{
+        } else {
             mode = rd_belumkupas.getText();
         }
 
         //Get All The Data
         List<mangga> listMangga = e.getAllDataTraining(mode);
-        
+
         //Find Square Distance
         //double[] sDis = new double[listMangga.size()];
         //int counter = 0;
         for (mangga lm : listMangga) {
-            lm.setSquareDistance(Math.pow((lm.getH() - h_test),2) + Math.pow((lm.getS() - s_test),2) + Math.pow((lm.getV() - v_test),2));
+            lm.setSquareDistance(Math.pow((lm.getH() - h_test), 2) + Math.pow((lm.getS() - s_test), 2) + Math.pow((lm.getV() - v_test), 2));
         }
-        
+
         //Sort By Rank
         listMangga.sort(Comparator.comparingDouble(mangga::getSquareDistance));
-        
+
 //        Show List That Has Been Ranked
 //        for (mangga lm : listMangga) {
 //            System.out.print("Kategori = " + lm.getKategori());
@@ -723,50 +724,73 @@ public class ui_main extends javax.swing.JFrame {
 //            System.out.println(" Square Distance = "+lm.getSquareDistance());
 //        }
 //        System.out.println("----------------------------------");
-        
         //Classified
         int manis = 0;
         int sedang = 0;
         int belum = 0;
         for (int i = 0; i < rank; i++) {
 //            System.out.println(listMangga.get(i).getKategori());
-            if(listMangga.get(i).getKategori().equals("Manis")){
+            if (listMangga.get(i).getKategori().equals("Manis")) {
                 manis++;
-            }else if(listMangga.get(i).getKategori().equals("Sedang")){
+            } else if (listMangga.get(i).getKategori().equals("Sedang")) {
                 sedang++;
-            }else if(listMangga.get(i).getKategori().equals("Belum Manis")){
+            } else if (listMangga.get(i).getKategori().equals("Belum Manis")) {
                 belum++;
             }
-            if(i == 0){
-                txt_knn.append(">Nilai Brix Terdekat : "+listMangga.get(i).getBrix()+"\n\n");
+            if (i == 0) {
+                txt_knn.append(">Nilai Brix Terdekat : " + listMangga.get(i).getBrix() + "\n\n");
             }
         }
-        System.out.println(manis +" ---- "+sedang+" ---- "+belum);
-        if(manis >= sedang && manis >= belum){
-            txt_knn.append(">Buah ini Manis\n");
-        }else if(sedang >= manis && sedang >= belum){
-            txt_knn.append(">Buah Ini Sedang - Sedang Saja\n");
-        }else if(belum >= sedang && belum >= manis){
-            txt_knn.append(">Buah Ini Belum Manis\n");
+        System.out.println(manis + " ---- " + sedang + " ---- " + belum);
+        if (manis >= sedang && manis >= belum) {
+            txt_knn.append(">Tingkat Kemanisan = Manis\n");
+        } else if (sedang >= manis && sedang >= belum) {
+            txt_knn.append(">Tingkat Kemanisan = Sedang\n");
+        } else if (belum >= sedang && belum >= manis) {
+            txt_knn.append(">Tingkat Kemanisan = Belum Manis\n");
         }
-        
+
     }
-    
-    public void SupportVectorMachineMethod(){
+
+    public void SupportVectorMachineMethod() {
         //Get  Data Training
         ExecutionManager e = new ExecutionManager();
         String mode = "";
-        if(rd_kupas.isSelected()){
+        if (rd_kupas.isSelected()) {
             mode = rd_kupas.getText();
-        }else{
+        } else {
             mode = rd_belumkupas.getText();
         }
         //Get All The Data
         List<mangga> listMangga = e.getAllDataTraining(mode);
         
+        double[] X = new double[listMangga.size()];
+        int i = 0;
+        for (mangga m : listMangga) {
+            X[i] = m.getH();
+            i++;
+        }
+        //Find Support Vector
         //Find Hyperlane
-        
         //Clasified
+        
+        //Alternate SVM (SVM.py is Under development)
+        try {
+            Process p = Runtime.getRuntime().exec("python SVM.py " + "\""+Arrays.toString(X)+"\"");
+            String s = null;
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((s = stdInput.readLine()) != null) {
+                if(s.equals("[0]")){
+                    txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
+                }else if(s.equals("[1]")){
+                    txt_svm.append(">Tingkat Kemanisan = Manis\n");
+                }
+                System.out.println(s);
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
