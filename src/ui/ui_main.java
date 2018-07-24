@@ -833,37 +833,68 @@ public class ui_main extends javax.swing.JFrame {
         //Array Y (Kategori)
         String tempY = Arrays.toString(Y).replace("[", "").replace(",", "").replace("]", "");
         
-        int[] svm = new int[3];
-        //H vs S
-        svm[0] = getAlternateSVM(H.length, tempH, tempS, tempY, h_test, s_test);
-        //S vs V
-        svm[1] = getAlternateSVM(S.length, tempS, tempV, tempY, s_test, v_test);
-        //H vs V
-        svm[2] = getAlternateSVM(H.length, tempH, tempV, tempY, h_test, v_test);
         
-        //Determine Class
-        int manis = 0;
-        int sedang = 0;
-        int belum = 0;
-        for (int t : svm) {
-            if(t == 0){
-                belum++;
-            }else if(t == 1){
-                sedang++;
-            }else{
-                manis++;
-            }
-        }
-        System.out.println(manis + " ---- " + sedang + " ---- " + belum);
-        if (manis >= sedang && manis >= belum) {
-            txt_svm.append(">Tingkat Kemanisan = Manis\n");
-        } else if (sedang >= manis && sedang >= belum) {
-            txt_svm.append(">Tingkat Kemanisan = Sedang\n");
-        } else if (belum >= sedang && belum >= manis) {
+        //SVM Alternative V1
+//        int[] svm = new int[3];
+//        //H vs S
+//        svm[0] = getAlternateSVM(H.length, tempH, tempS, tempY, h_test, s_test);
+//        //S vs V
+//        svm[1] = getAlternateSVM(S.length, tempS, tempV, tempY, s_test, v_test);
+//        //H vs V
+//        svm[2] = getAlternateSVM(H.length, tempH, tempV, tempY, h_test, v_test);
+//        
+//        //Determine Class
+//        int manis = 0;
+//        int sedang = 0;
+//        int belum = 0;
+//        for (int t : svm) {
+//            if(t == 0){
+//                belum++;
+//            }else if(t == 1){
+//                sedang++;
+//            }else{
+//                manis++;
+//            }
+//        }
+//        
+////        System.out.println(manis + " ---- " + sedang + " ---- " + belum);
+////        if (manis >= sedang && manis >= belum) {
+////            txt_svm.append(">Tingkat Kemanisan = Manis\n");
+////        } else if (sedang >= manis && sedang >= belum) {
+////            txt_svm.append(">Tingkat Kemanisan = Sedang\n");
+////        } else if (belum >= sedang && belum >= manis) {
+////            txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
+////        }
+        
+        //SVM Alternative V2
+        int svm = getAlternateSVMv2(H.length, tempH, tempS, tempV, tempY, h_test, s_test, v_test);
+        if(svm==0){
             txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
+        }else if(svm==1){
+            txt_svm.append(">Tingkat Kemanisan = Sedang\n");
+        }else{
+            txt_svm.append(">Tingkat Kemanisan = Manis\n");
         }
     }
 
+    public int getAlternateSVMv2(int length, String X1, String X2, String X3, String Y, double Q1, double Q2, double Q3) {
+        int result = 0;
+        //Alternative SVM (SVM.py is Under development)
+        try {
+            Process p = Runtime.getRuntime().exec("python SVM.py " + length + " " + Q1 + " " + Q2 + " " + Q3 + " " + X1 + " " + X2 + " " + X3 + " " + Y);
+            String s = null;
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((s = stdInput.readLine()) != null) {
+                result = Integer.parseInt(s.replace("[", "").replace("]", ""));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+            writeLog(ex.toString());
+            JOptionPane.showMessageDialog(null, "There is a problem with SVM Method, Check the error log");
+        }
+        return result;
+    }
+    
     public int getAlternateSVM(int length, String X1, String X2, String Y, double Q1, double Q2) {
         int result = 0;
         //Alternative SVM (SVM.py is Under development)
