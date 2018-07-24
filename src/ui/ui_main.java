@@ -12,9 +12,14 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,6 +29,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.opencv.core.*;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
@@ -48,6 +54,7 @@ public class ui_main extends javax.swing.JFrame {
      */
     public ui_main() {
         initComponents();
+        logFileConfig();
         setLocationRelativeTo(this);
     }
 
@@ -492,7 +499,7 @@ public class ui_main extends javax.swing.JFrame {
         s_test = 0.0;
         v_test = 0.0;
         try {
-            //Please do not laught if you see this code cause i'm a beginer LOL
+            //Please do not laught when you see this code LOL
             try {
                 choosenFile.showOpenDialog(null);
             } catch (Exception e) {
@@ -504,6 +511,53 @@ public class ui_main extends javax.swing.JFrame {
             input = choosenFile.getSelectedFile();
             imageTest = ImageIO.read(input);
 
+            txt_svm.append("Memproses ...\n\n");
+            txt_knn.append("Memproses ...\n\n");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    loadImage();
+                }
+
+            }).start();
+
+        } catch (IOException ex) {
+            Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_browseActionPerformed
+
+    private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
+        int rank = 0;
+        try {
+            rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));
+        } catch (Exception e) {
+            //Do Nothing
+        }
+        if (rank != 0) {
+            KNearestNeighborMethod(rank);
+        }
+    }//GEN-LAST:event_btn_execKNNActionPerformed
+
+    private void btn_execSVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execSVMActionPerformed
+        txt_svm.append("Memproses ...\n\n");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SupportVectorMachineMethod();
+            }
+
+        }).start();
+
+    }//GEN-LAST:event_btn_execSVMActionPerformed
+
+    private void btn_dataTrainingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dataTrainingActionPerformed
+        ui_training train = new ui_training();
+        train.setVisible(true);
+    }//GEN-LAST:event_btn_dataTrainingActionPerformed
+
+    //Our Methods LOL
+    private void loadImage() {
+        try {
             // Show Original Image To Panel
             Graphics g = panel_image.getGraphics();
             g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
@@ -525,34 +579,11 @@ public class ui_main extends javax.swing.JFrame {
             h_test = hsv[0];
             s_test = hsv[1];
             v_test = hsv[2];
-
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btn_browseActionPerformed
+    }
 
-    private void btn_execKNNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execKNNActionPerformed
-        int rank = 0;
-        try {
-            rank = Integer.parseInt(JOptionPane.showInputDialog("Masukkan Ranking"));
-        } catch (Exception e) {
-            //Do Nothing
-        }
-        if (rank != 0) {
-            KNearestNeighborMethod(rank);
-        }
-    }//GEN-LAST:event_btn_execKNNActionPerformed
-
-    private void btn_execSVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_execSVMActionPerformed
-        SupportVectorMachineMethod();
-    }//GEN-LAST:event_btn_execSVMActionPerformed
-
-    private void btn_dataTrainingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dataTrainingActionPerformed
-        ui_training train = new ui_training();
-        train.setVisible(true);
-    }//GEN-LAST:event_btn_dataTrainingActionPerformed
-
-    //Our Methods ngehehehhe
     public void convertGrayscale() {
         //Convert To Grayscale
         byte[] data = ((DataBufferByte) imageTest.getRaster().getDataBuffer()).getData();
@@ -589,16 +620,23 @@ public class ui_main extends javax.swing.JFrame {
             g0.drawImage(imageObject, 0, 0, 320, 240, 0, 0, imageObject.getWidth(), imageObject.getHeight(), null);
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+            writeLog(ex.toString());
+            JOptionPane.showMessageDialog(null, "Too many objects detected, chose another image or check error log");
         }
     }
 
     public void getSampleImage() {
-        Mat imgOri = Highgui.imread("image_object.png");
-        int x_pos = Math.round(imgOri.width() / 2) - 50;
-        int y_pos = Math.round(imgOri.height() / 2) - 50;
-        Rect r = new Rect(x_pos, y_pos, 100, 100);
-        Mat image_roi = new Mat(imgOri, r);
-        Highgui.imwrite("image_sample.png", image_roi);
+        try {
+            Mat imgOri = Highgui.imread("image_object.png");
+            int x_pos = Math.round(imgOri.width() / 2) - 50;
+            int y_pos = Math.round(imgOri.height() / 2) - 50;
+            Rect r = new Rect(x_pos, y_pos, 100, 100);
+            Mat image_roi = new Mat(imgOri, r);
+            Highgui.imwrite("image_sample.png", image_roi);
+        } catch (Exception e) {
+            writeLog(e.toString());
+            JOptionPane.showMessageDialog(null, "Image object resolution is less then 100x100 px,\n Chose another image for beter result");
+        }
     }
 
     public void convertImage2HSV() {
@@ -763,33 +801,111 @@ public class ui_main extends javax.swing.JFrame {
         }
         //Get All The Data
         List<mangga> listMangga = e.getAllDataTraining(mode);
-        
-        double[] X = new double[listMangga.size()];
+
+        double[] H = new double[listMangga.size()];
+        double[] S = new double[listMangga.size()];
+        double[] V = new double[listMangga.size()];
+        int[] Y = new int[listMangga.size()];
         int i = 0;
         for (mangga m : listMangga) {
-            X[i] = m.getH();
+            H[i] = m.getH();
+            S[i] = m.getS();
+            V[i] = m.getV();
+            if (m.getKategori().equals("Manis")) {
+                Y[i] = 2;
+            } else if (m.getKategori().equals("Sedang")){
+                Y[i] = 1;
+            }else{
+                Y[i] = 0;
+            }
             i++;
         }
         //Find Support Vector
         //Find Hyperlane
         //Clasified
+
+        //Array H
+        String tempH = Arrays.toString(H).replace("[", "").replace(",", "").replace("]", "");
+        //Array S
+        String tempS = Arrays.toString(S).replace("[", "").replace(",", "").replace("]", "");
+        //Array V
+        String tempV = Arrays.toString(V).replace("[", "").replace(",", "").replace("]", "");
+        //Array Y (Kategori)
+        String tempY = Arrays.toString(Y).replace("[", "").replace(",", "").replace("]", "");
         
-        //Alternate SVM (SVM.py is Under development)
+        int[] svm = new int[3];
+        //H vs S
+        svm[0] = getAlternateSVM(H.length, tempH, tempS, tempY, h_test, s_test);
+        //S vs V
+        svm[1] = getAlternateSVM(S.length, tempS, tempV, tempY, s_test, v_test);
+        //H vs V
+        svm[2] = getAlternateSVM(H.length, tempH, tempV, tempY, h_test, v_test);
+        
+        //Determine Class
+        int manis = 0;
+        int sedang = 0;
+        int belum = 0;
+        for (int t : svm) {
+            if(t == 0){
+                belum++;
+            }else if(t == 1){
+                sedang++;
+            }else{
+                manis++;
+            }
+        }
+        System.out.println(manis + " ---- " + sedang + " ---- " + belum);
+        if (manis >= sedang && manis >= belum) {
+            txt_svm.append(">Tingkat Kemanisan = Manis\n");
+        } else if (sedang >= manis && sedang >= belum) {
+            txt_svm.append(">Tingkat Kemanisan = Sedang\n");
+        } else if (belum >= sedang && belum >= manis) {
+            txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
+        }
+    }
+
+    public int getAlternateSVM(int length, String X1, String X2, String Y, double Q1, double Q2) {
+        int result = 0;
+        //Alternative SVM (SVM.py is Under development)
         try {
-            Process p = Runtime.getRuntime().exec("python SVM.py " + "\""+Arrays.toString(X)+"\"");
+            Process p = Runtime.getRuntime().exec("python SVM.py " + length + " " + Q1 + " " + Q2 + " " + X1 + " " + X2 + " " + Y);
             String s = null;
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((s = stdInput.readLine()) != null) {
-                if(s.equals("[0]")){
-                    txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
-                }else if(s.equals("[1]")){
-                    txt_svm.append(">Tingkat Kemanisan = Manis\n");
-                }
-                System.out.println(s);
+                result = Integer.parseInt(s.replace("[", "").replace("]", ""));
             }
-            
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+            writeLog(ex.toString());
+            JOptionPane.showMessageDialog(null, "There is a problem with SVM Method, Check the error log");
+        }
+        return result;
+    }
+
+    public void logFileConfig() {
+        File tmpDir = new File("log.txt");
+        boolean exists = tmpDir.exists();
+        if (!exists) {
+            String filename = "log.txt";
+            try {
+                PrintWriter outputStream = new PrintWriter(filename);
+                outputStream.println("LOG FILE");
+                outputStream.close();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "There is a problem with configuration log file");
+            }
+        }
+    }
+
+    public void writeLog(String m) {
+        try (FileWriter fw = new FileWriter("log.txt", true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            out.println(timestamp + " - " + m);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "There is a problem when write to log file");
         }
     }
 
