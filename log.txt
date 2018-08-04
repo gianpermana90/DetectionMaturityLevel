@@ -5,3 +5,5 @@ LOG FILE
 ]
 2018-07-23 15:42:45.262 - CvException [org.opencv.core.CvException: cv::Exception: ..\..\..\..\opencv\modules\core\src\matrix.cpp:284: error: (-215) 0 <= _rowRange.start && _rowRange.start <= _rowRange.end && _rowRange.end <= m.rows in function cv::Mat::Mat
 ]
+2018-07-26 13:53:25.858 - CvException [org.opencv.core.CvException: cv::Exception: ..\..\..\..\opencv\modules\core\src\matrix.cpp:284: error: (-215) 0 <= _rowRange.start && _rowRange.start <= _rowRange.end && _rowRange.end <= m.rows in function cv::Mat::Mat
+]

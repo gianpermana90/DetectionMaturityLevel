@@ -48,6 +48,7 @@ public class ui_main extends javax.swing.JFrame {
     public double h_test;
     public double s_test;
     public double v_test;
+    private boolean isLoaded;
 
     /**
      * Creates new form ui_main
@@ -56,6 +57,7 @@ public class ui_main extends javax.swing.JFrame {
         initComponents();
         logFileConfig();
         setLocationRelativeTo(this);
+        isLoaded = false;
     }
 
     /**
@@ -561,6 +563,7 @@ public class ui_main extends javax.swing.JFrame {
             // Show Original Image To Panel
             Graphics g = panel_image.getGraphics();
             g.drawImage(imageTest, 0, 0, 320, 240, 0, 0, imageTest.getWidth(), imageTest.getHeight(), null);
+            isLoaded = true;
 
             //Make a copy of image test
             File out = new File("image_test.jpg");
