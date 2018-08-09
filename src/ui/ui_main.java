@@ -610,12 +610,7 @@ public class ui_main extends javax.swing.JFrame {
             while ((s = stdInput.readLine()) != null) {
                 System.out.println(s);
             }
-            File fileHSV = new File("image_object.png");
-            imageObject = ImageIO.read(fileHSV);
 
-            // Show Object Image To Panel
-            Graphics g0 = panel_cropped.getGraphics();
-            g0.drawImage(imageObject, 0, 0, 320, 240, 0, 0, imageObject.getWidth(), imageObject.getHeight(), null);
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
             writeLog(ex.toString());
@@ -631,6 +626,12 @@ public class ui_main extends javax.swing.JFrame {
             Rect r = new Rect(x_pos, y_pos, 100, 100);
             Mat image_roi = new Mat(imgOri, r);
             Highgui.imwrite("image_sample.png", image_roi);
+            
+            File fileSample = new File("image_sample.png");
+            imageObject = ImageIO.read(fileSample);
+            // Show Object Image To Panel
+            Graphics g0 = panel_cropped.getGraphics();
+            g0.drawImage(imageObject, 0, 0, 320, 240, 0, 0, imageObject.getWidth(), imageObject.getHeight(), null);
         } catch (Exception e) {
             writeLog(e.toString());
             JOptionPane.showMessageDialog(null, "Image object resolution is less then 100x100 px,\n Chose another image for beter result");
@@ -640,7 +641,7 @@ public class ui_main extends javax.swing.JFrame {
     public void convertImage2HSV() {
         try {
             //Convert to HSV
-            Mat rgb = Highgui.imread("image_object.png");
+            Mat rgb = Highgui.imread("image_sample.png");
             Mat hsv = new Mat();
             Imgproc.cvtColor(rgb, hsv, Imgproc.COLOR_RGB2HSV);
             Highgui.imwrite("image_hsv.png", hsv);
