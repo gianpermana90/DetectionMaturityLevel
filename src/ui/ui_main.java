@@ -501,27 +501,22 @@ public class ui_main extends javax.swing.JFrame {
         s_test = 0.0;
         v_test = 0.0;
         try {
-            //Please do not laught when you see this code LOL
-            try {
-                choosenFile.showOpenDialog(null);
-            } catch (Exception e) {
-                //Do nothing
+            if (choosenFile.showOpenDialog(null) == 0) {
+                //Select File
+                File input = new File("");
+                input = choosenFile.getSelectedFile();
+                imageTest = ImageIO.read(input);
+
+                txt_svm.append("Memproses ...\n\n");
+                txt_knn.append("Memproses ...\n\n");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadImage();
+                    }
+
+                }).start();
             }
-
-            //Select File
-            File input = new File("");
-            input = choosenFile.getSelectedFile();
-            imageTest = ImageIO.read(input);
-
-            txt_svm.append("Memproses ...\n\n");
-            txt_knn.append("Memproses ...\n\n");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    loadImage();
-                }
-
-            }).start();
 
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
@@ -816,9 +811,9 @@ public class ui_main extends javax.swing.JFrame {
             V[i] = m.getV();
             if (m.getKategori().equals("Manis")) {
                 Y[i] = 2;
-            } else if (m.getKategori().equals("Sedang")){
+            } else if (m.getKategori().equals("Sedang")) {
                 Y[i] = 1;
-            }else{
+            } else {
                 Y[i] = 0;
             }
             i++;
@@ -835,8 +830,7 @@ public class ui_main extends javax.swing.JFrame {
         String tempV = Arrays.toString(V).replace("[", "").replace(",", "").replace("]", "");
         //Array Y (Kategori)
         String tempY = Arrays.toString(Y).replace("[", "").replace(",", "").replace("]", "");
-        
-        
+
         //SVM Alternative V1
 //        int[] svm = new int[3];
 //        //H vs S
@@ -868,14 +862,13 @@ public class ui_main extends javax.swing.JFrame {
 ////        } else if (belum >= sedang && belum >= manis) {
 ////            txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
 ////        }
-        
         //SVM Alternative V2
         int svm = getAlternateSVMv2(H.length, tempH, tempS, tempV, tempY, h_test, s_test, v_test);
-        if(svm==0){
+        if (svm == 0) {
             txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
-        }else if(svm==1){
+        } else if (svm == 1) {
             txt_svm.append(">Tingkat Kemanisan = Sedang\n");
-        }else{
+        } else {
             txt_svm.append(">Tingkat Kemanisan = Manis\n");
         }
     }
@@ -897,7 +890,7 @@ public class ui_main extends javax.swing.JFrame {
         }
         return result;
     }
-    
+
     public int getAlternateSVM(int length, String X1, String X2, String Y, double Q1, double Q2) {
         int result = 0;
         //Alternative SVM (SVM.py is Under development)
