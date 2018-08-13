@@ -18,7 +18,7 @@ public class ConnectionManager {
     private String driver = "com.mysql.jdbc.Driver";
     private String url = "jdbc:mysql://localhost:3306/svm_knn";
     private String username = "root";
-    private String password = "4426896";
+    private String password = "";
 
     public Connection logOn() {
         try {
