@@ -395,7 +395,7 @@ public class ui_main extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -626,7 +626,7 @@ public class ui_main extends javax.swing.JFrame {
             Rect r = new Rect(x_pos, y_pos, 100, 100);
             Mat image_roi = new Mat(imgOri, r);
             Highgui.imwrite("image_sample.png", image_roi);
-            
+
             File fileSample = new File("image_sample.png");
             imageObject = ImageIO.read(fileSample);
             // Show Object Image To Panel
@@ -800,62 +800,135 @@ public class ui_main extends javax.swing.JFrame {
         }
         //Get All The Data
         List<mangga> listMangga = e.getAllDataTraining(mode);
-
-        double[] H = new double[listMangga.size()];
-        double[] S = new double[listMangga.size()];
-        double[] V = new double[listMangga.size()];
-        int[] Y = new int[listMangga.size()];
-        int i = 0;
+        int i = 1;
         for (mangga m : listMangga) {
-            H[i] = m.getH();
-            S[i] = m.getS();
-            V[i] = m.getV();
-            if (m.getKategori().equals("Manis")) {
-                Y[i] = 2;
-            } else if (m.getKategori().equals("Sedang")) {
-                Y[i] = 1;
-            } else {
-                Y[i] = 0;
-            }
+            txt_svm.append("Mangga " + i + " : "
+                    + "H= " + String.format("%.2f", m.getH()) + " "
+                    + "S= " + String.format("%.2f", m.getS()) + " "
+                    + "V= " + String.format("%.2f", m.getV()) + " "
+                    + "Kat = " + m.getKategori() + " \n");
             i++;
         }
-        //Find Support Vector
-        //Find Hyperlane
-        //Clasified
 
-        //Array H
-        String tempH = Arrays.toString(H).replace("[", "").replace(",", "").replace("]", "");
-        //Array S
-        String tempS = Arrays.toString(S).replace("[", "").replace(",", "").replace("]", "");
-        //Array V
-        String tempV = Arrays.toString(V).replace("[", "").replace(",", "").replace("]", "");
-        //Array Y (Kategori)
-        String tempY = Arrays.toString(Y).replace("[", "").replace(",", "").replace("]", "");
-
-        //SVM Alternative V1
+        //One Against One
         int[] svm = new int[3];
-        //H vs S
-        svm[0] = getAlternateSVM(H.length, tempH, tempS, tempY, h_test, s_test);
-        //S vs V
-        svm[1] = getAlternateSVM(S.length, tempS, tempV, tempY, s_test, v_test);
-        //H vs V
-        svm[2] = getAlternateSVM(H.length, tempH, tempV, tempY, h_test, v_test);
-        
+
+        //Manis [2] vs Sedang [1]
+        String tempH = "";
+        String tempS = "";
+        String tempV = "";
+        String tempY = "";
+        int mm = 0;
+        int ms = 0;
+        int mb = 0;
+        String Command = "";
+        for (mangga m : listMangga) {
+            if (m.getKategori().equals("Manis")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 2 + " ";
+                mm++;
+            } else if (m.getKategori().equals("Sedang")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 1 + " ";
+                ms++;
+            }
+        }
+        txt_svm.append("\nMemproses...\n");
+        txt_svm.append("Manis vs Sedang...\n");
+        Command = mm + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        svm[0] = getAlternateSVM(Command);
+        if(svm[0]==2){
+            txt_svm.append(">Output : Manis\n\n");
+        }else if(svm[0]==1){
+            txt_svm.append(">Output : Sedang\n\n");
+        }
+
+        //Manis [2] vs Belum [0]
+        tempH = "";
+        tempS = "";
+        tempV = "";
+        tempY = "";
+        mm = 0;
+        mb = 0;
+        ms = 0;
+        for (mangga m : listMangga) {
+            if (m.getKategori().equals("Manis")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 2 + " ";
+                mm++;
+            } else if (m.getKategori().equals("Belum Manis")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 0 + " ";
+                mb++;
+            }
+        }
+        txt_svm.append("Memproses...\n");
+        txt_svm.append("Manis vs Belum Manis...\n");
+        Command = mm + " " + mb + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        svm[1] = getAlternateSVM(Command);
+        if(svm[1]==2){
+            txt_svm.append(">Output : Manis\n\n");
+        }else if(svm[1]==0){
+            txt_svm.append(">Output : Belum Manis\n\n");
+        }
+
+        //Belum [0] vs Sedang [1]
+        tempH = "";
+        tempS = "";
+        tempV = "";
+        tempY = "";
+        mm = 0;
+        mb = 0;
+        ms = 0;
+        for (mangga m : listMangga) {
+            if (m.getKategori().equals("Belum Manis")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 0 + " ";
+                mb++;
+            } else if (m.getKategori().equals("Sedang")) {
+                tempH += m.getH() + " ";
+                tempS += m.getS() + " ";
+                tempV += m.getV() + " ";
+                tempY += 1 + " ";
+                ms++;
+            }
+        }
+        txt_svm.append("Memproses...\n");
+        txt_svm.append("Belum Manis vs Sedang...\n");
+        Command = mb + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        svm[2] = getAlternateSVM(Command);
+        if(svm[2]==0){
+            txt_svm.append(">Output : Belum Manis\n\n");
+        }else if(svm[2]==1){
+            txt_svm.append(">Output : Sedang\n\n");
+        }
+
         //Determine Class
         int manis = 0;
         int sedang = 0;
         int belum = 0;
         for (int t : svm) {
-            if(t == 0){
+            if (t == 0) {
                 belum++;
-            }else if(t == 1){
+            } else if (t == 1) {
                 sedang++;
-            }else{
+            } else {
                 manis++;
             }
         }
-        
+
         System.out.println(manis + " ---- " + sedang + " ---- " + belum);
+        txt_svm.append("HASIL AKHIR\n");
         if (manis >= sedang && manis >= belum) {
             txt_svm.append(">Tingkat Kemanisan = Manis\n");
         } else if (sedang >= manis && sedang >= belum) {
@@ -863,7 +936,7 @@ public class ui_main extends javax.swing.JFrame {
         } else if (belum >= sedang && belum >= manis) {
             txt_svm.append(">Tingkat Kemanisan = Belum Manis\n");
         }
-        
+
         //SVM Alternative V2
 //        int svm = getAlternateSVMv2(H.length, tempH, tempS, tempV, tempY, h_test, s_test, v_test);
 //        if (svm == 0) {
@@ -893,11 +966,11 @@ public class ui_main extends javax.swing.JFrame {
         return result;
     }
 
-    public int getAlternateSVM(int length, String X1, String X2, String Y, double Q1, double Q2) {
+    public int getAlternateSVM(String Command) {
         int result = 0;
         //Alternative SVM (SVM.py is Under development)
         try {
-            Process p = Runtime.getRuntime().exec("python SVM_V1.py " + length + " " + Q1 + " " + Q2 + " " + X1 + " " + X2 + " " + Y);
+            Process p = Runtime.getRuntime().exec("python SVM_V1.py " + Command);
             String s = null;
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((s = stdInput.readLine()) != null) {
