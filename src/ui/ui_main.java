@@ -840,6 +840,7 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("\nMemproses...\n");
         txt_svm.append("Manis vs Sedang...\n");
         Command = mm + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        System.out.println(Command);
         svm[0] = getAlternateSVM(Command);
         if(svm[0]==2){
             txt_svm.append(">Output : Manis\n\n");
@@ -873,6 +874,7 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("Memproses...\n");
         txt_svm.append("Manis vs Belum Manis...\n");
         Command = mm + " " + mb + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        System.out.println(Command);
         svm[1] = getAlternateSVM(Command);
         if(svm[1]==2){
             txt_svm.append(">Output : Manis\n\n");
@@ -906,6 +908,7 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("Memproses...\n");
         txt_svm.append("Belum Manis vs Sedang...\n");
         Command = mb + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
+        System.out.println(Command);
         svm[2] = getAlternateSVM(Command);
         if(svm[2]==0){
             txt_svm.append(">Output : Belum Manis\n\n");
