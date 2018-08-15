@@ -26,10 +26,30 @@ q1 = float(sys.argv[y])
 q2 = float(sys.argv[y+1])
 q3 = float(sys.argv[y+2])
 
-clf = svm.SVC()
+clf = svm.SVC(kernel='linear', C =  1.0)
 clf.fit(X,Y)
 
 print(clf.predict([[q1,q2,q3]]))
+
+res = []
+
+w = clf.coef_[0]
+a1 = -w[0] / w[1]
+a2 = -w[1] / w[2]
+xx = np.linspace(0,80)
+res.append(xx[0])
+res.append(xx[49])
+##print(xx[0],' ',xx[49])
+yy = a1 * xx - clf.intercept_[0] / w[1]
+res.append(yy[0])
+res.append(yy[49])
+##print(yy[0],' ',yy[49])
+zz = a2 * yy - clf.intercept_[0] / w[2]
+res.append(zz[0])
+res.append(zz[49])
+##print(zz[0],' ',zz[49])
+
+print(str(res))
 
 ##Show Graph
 ##plt.scatter(X[:,0], X[:,1], c=y)

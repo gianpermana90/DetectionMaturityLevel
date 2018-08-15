@@ -141,10 +141,10 @@ public class ui_main extends javax.swing.JFrame {
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         bntGroupModelBuah.add(rd_kupas);
+        rd_kupas.setSelected(true);
         rd_kupas.setText("Terkupas");
 
         bntGroupModelBuah.add(rd_belumkupas);
-        rd_belumkupas.setSelected(true);
         rd_belumkupas.setText("Belum Terkupas");
 
         jLabel1.setText("Keadaan Buah untuk Diklasifikasi");
@@ -840,11 +840,10 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("\nMemproses...\n");
         txt_svm.append("Manis vs Sedang...\n");
         Command = mm + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
-        System.out.println(Command);
         svm[0] = getAlternateSVM(Command);
-        if(svm[0]==2){
+        if (svm[0] == 2) {
             txt_svm.append(">Output : Manis\n\n");
-        }else if(svm[0]==1){
+        } else if (svm[0] == 1) {
             txt_svm.append(">Output : Sedang\n\n");
         }
 
@@ -874,11 +873,10 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("Memproses...\n");
         txt_svm.append("Manis vs Belum Manis...\n");
         Command = mm + " " + mb + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
-        System.out.println(Command);
         svm[1] = getAlternateSVM(Command);
-        if(svm[1]==2){
+        if (svm[1] == 2) {
             txt_svm.append(">Output : Manis\n\n");
-        }else if(svm[1]==0){
+        } else if (svm[1] == 0) {
             txt_svm.append(">Output : Belum Manis\n\n");
         }
 
@@ -908,11 +906,10 @@ public class ui_main extends javax.swing.JFrame {
         txt_svm.append("Memproses...\n");
         txt_svm.append("Belum Manis vs Sedang...\n");
         Command = mb + " " + ms + " " + tempH + tempS + tempV + tempY + h_test + " " + s_test + " " + v_test;
-        System.out.println(Command);
         svm[2] = getAlternateSVM(Command);
-        if(svm[2]==0){
+        if (svm[2] == 0) {
             txt_svm.append(">Output : Belum Manis\n\n");
-        }else if(svm[2]==1){
+        } else if (svm[2] == 1) {
             txt_svm.append(">Output : Sedang\n\n");
         }
 
@@ -972,12 +969,24 @@ public class ui_main extends javax.swing.JFrame {
     public int getAlternateSVM(String Command) {
         int result = 0;
         //Alternative SVM (SVM.py is Under development)
+        int index = 1;
+        String temp = "";
+        String[] ko = new String[6];
         try {
             Process p = Runtime.getRuntime().exec("python SVM_V1.py " + Command);
             String s = null;
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((s = stdInput.readLine()) != null) {
-                result = Integer.parseInt(s.replace("[", "").replace("]", ""));
+                if(index ==1){
+                    result = Integer.parseInt(s.replace("[", "").replace("]", ""));
+                    index++;
+                }else{
+                    temp = s.replace("[", "").replace("]", "");
+                    ko = temp.split(",");
+                    //Show Hyperplane
+                    txt_svm.append("Hyperplane\n");
+                    txt_svm.append("["+ko[0]+","+ko[2]+","+ko[4]+"]....["+ko[1]+","+ko[3]+","+ko[5]+"]");
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(ui_main.class.getName()).log(Level.SEVERE, null, ex);
